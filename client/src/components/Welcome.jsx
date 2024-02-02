@@ -1,8 +1,10 @@
+import React, { useContext } from "react";
 import { AiFillPlayCircle } from "react-icons/ai";
 import { SiEthereum } from "react-icons/si";
 import { BsInfoCircle } from "react-icons/bs";
-
 import { Loader } from "./";
+
+import { TransactionContext } from "../context/TransactionContext";
 
 const companyCommonStyles =
   "min-h-[70px] sm:px-0 px-2 sm:min-w-[120px] flex justify-center items-center border-[0.5px] border-gray-400 text-sm font-light text-white";
@@ -18,6 +20,9 @@ const Input = ({ placeholder, name, type, value }) => (
   />
 );
 export default function Welcome() {
+  const { value } = useContext(TransactionContext);
+  console.log(value);
+
   const handleSubmit = () => {};
   const connectWallet = () => {};
   return (
@@ -97,9 +102,17 @@ export default function Welcome() {
             />
 
             <div className="h-[1px] w-full bg-gray-400 my-2"></div>
-            {true ? <Loader /> : <button type="button" onClick={handleSubmit} className="text-white w-full mt-2 border-[1px] p-2 border-[#3d4f7c] rounded-full">
-              Send Now
-              </button>}
+            {true ? (
+              <Loader />
+            ) : (
+              <button
+                type="button"
+                onClick={handleSubmit}
+                className="text-white w-full mt-2 border-[1px] p-2 border-[#3d4f7c] rounded-full"
+              >
+                Send Now
+              </button>
+            )}
           </div>
         </div>
       </div>
