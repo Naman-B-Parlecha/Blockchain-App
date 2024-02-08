@@ -23,12 +23,32 @@ const getEthereumContract = () => {
 };
 
 export const TransactionProvider = ({ children }) => {
-  const [connectedAccount, setConnectedAccount] = useState();
+  const [currentAccount, setcurrentAccount] = useState();
+  const [formData, setFormData] = useState({
+    addressTo: "",
+    amount: "",
+    keyword: "",
+    message: "",
+  });
+  const handleChange = (e, name) => {
+    setFormData((prevState) => ({ ...prevState, [name]: e.terget.value }));
+  };
   const checkIfWalletIsConnected = async () => {
-    if (!ethereum) return alert("Please install metamask");
+    try {
+      if (!ethereum) return alert("Please install metamask");
 
-    const accounts = await ethereum.request({ method: "eth_accounts" });
+      const accounts = await ethereum.request({ method: "eth_accounts" });
 
+      if (accounts.length) {
+        setcurrentAccount(accounts[0]);
+      } else {
+        console.log("account not  found");
+      }
+    } catch (error) {
+      console.log(error);
+
+      throw new Error("No ethereum object. ");
+    } 
     console.log(accounts);
   };
 
@@ -39,16 +59,30 @@ export const TransactionProvider = ({ children }) => {
       const accounts = await ethereum.request({
         method: "eth_requestAccounts",
       });
-      setConnectedAccount(accounts[0]);
-    } catch (error) {}
+      setcurrentAccount(accounts[0]);
+    } catch (error) {
+      console.log(error);
+
+      throw new Error("No ethereum object. ");
+    }
   };
 
+  const sendTransactions = async () => {
+    try {
+      if (!ethereum) return alert("Please install metamask");
+
+      const { addressTo, amount, keyword, message } = formData.value;
+      getEthereumContract();
+    } catch (error) {
+      console.log("No ethereum object");
+    }
+  };
   useEffect(() => {
     checkIfWalletIsConnected();
   }, []);
 
   return (
-    <TransactionContext.Provider value={{ value: "test" }}>
+    <TransactionContext.Provider value={{ connectWallet, currentAccount, formData, setFormData, handleChange, sendTransactions }}>
       {children}
     </TransactionContext.Provider>
   );

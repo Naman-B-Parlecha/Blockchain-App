@@ -19,12 +19,18 @@ const Input = ({ placeholder, name, type, value }) => (
     className="my-2 w-full rounded-sm p-2 outline-none bg-transparent text-white border-none text-sm white-glassmorphism"
   />
 );
-export default function Welcome() {
-  const { value } = useContext(TransactionContext);
-  console.log(value);
+const Welcome = () => {
+  const { connectWallet, currentAccount, formData, handleChange, sendTransactions } =
+    useContext(TransactionContext);
 
-  const handleSubmit = () => {};
-  const connectWallet = () => {};
+  const handleSubmit = (e) => {
+    const { addressTo, amount, keyword, message } = formData.value;
+
+    e.preventDefault(); // using this because whenever someone submits the form the pages reloads inorder to avoid that we use this function
+    if(!addressTo || !amount || !keyword || !message) return;
+    sendTransactions();
+  };
+  // const connectWallet = () => {};
   return (
     <div className="flex w-full justify-center items-center">
       <div className="flex mf:flex-row flex-col items-start justify-between md:p-20 py-12 px-4">
@@ -36,13 +42,17 @@ export default function Welcome() {
             Explore the crypto world. Buy and sell cryptocurrencies easily on
             Krypto.
           </p>
-          <button
-            type="button"
-            onClick={connectWallet}
-            className="flex flex-row justify-center items-center py-5 bg-[#2952e3] p-3 rounded-full cursor-pointer hover:bg-[#2542bd] mt-3"
-          >
-            <p className="text-white text-base font-semibold">Connect Wallet</p>
-          </button>
+          {!currentAccount && (
+            <button
+              type="button"
+              onClick={connectWallet}
+              className="flex flex-row justify-center items-center py-5 bg-[#2952e3] p-3 rounded-full cursor-pointer hover:bg-[#2542bd] mt-3"
+            >
+              <p className="text-white text-base font-semibold">
+                Connect Wallet
+              </p>
+            </button>
+          )}
           <div className="grid sm:grid-cols-3 grid-cols-2 w-full mt-10">
             <div className={`rounded-tl-2xl ${companyCommonStyles}`}>
               Reliability
@@ -80,29 +90,29 @@ export default function Welcome() {
               placeholder="Address To"
               name="addressTo"
               type="text"
-              handleChange={() => {}}
+              handleChange={handleChange}
             />
             <Input
               placeholder="Amount(ETH)"
               name="amount"
               type="number"
-              handleChange={() => {}}
+              handleChange={handleChange}
             />
             <Input
               placeholder="KeyBoard (Gif)"
-              name="Keyword"
+              name="keyword"
               type="text"
-              handleChange={() => {}}
+              handleChange={handleChange}
             />
             <Input
               placeholder="Enter Message"
               name="message"
               type="text"
-              handleChange={() => {}}
+              handleChange={handleChange}
             />
 
             <div className="h-[1px] w-full bg-gray-400 my-2"></div>
-            {true ? (
+            {!currentAccount ? (
               <Loader />
             ) : (
               <button
@@ -118,4 +128,6 @@ export default function Welcome() {
       </div>
     </div>
   );
-}
+};
+
+export default Welcome;
